@@ -9,11 +9,11 @@ namespace Runner\Container;
 
 use ArrayAccess;
 use Closure;
+use Exception;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionParameter;
 use Runner\Container\Exceptions\BindingResolutionException;
-use ReflectionException;
-use Exception;
 
 class Container implements ArrayAccess
 {
@@ -51,9 +51,9 @@ class Container implements ArrayAccess
     /**
      * @param string $name
      *
-     * @return object
-     *
      * @throws ReflectionException
+     *
+     * @return object
      */
     public function make($name)
     {
@@ -87,9 +87,9 @@ class Container implements ArrayAccess
     /**
      * @param ReflectionParameter[] $reflectionParameters
      *
-     * @return array
-     *
      * @throws
+     *
+     * @return array
      */
     protected function getDependencies(array $reflectionParameters)
     {
@@ -167,9 +167,9 @@ class Container implements ArrayAccess
     /**
      * @param mixed $offset
      *
-     * @return mixed|object
-     *
      * @throws ReflectionException
+     *
+     * @return mixed|object
      */
     public function offsetGet($offset)
     {
