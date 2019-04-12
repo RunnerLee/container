@@ -13,7 +13,7 @@ class AlphaClass
     public function __construct(ArrayAccess $arrayAccess, SplStack $stack)
     {
         $this->object = $arrayAccess;
-        $this->stack  = $stack;
+        $this->stack = $stack;
     }
 
     public function getObject()
