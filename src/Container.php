@@ -61,10 +61,28 @@ class Container implements ArrayAccess
             return $this->instances[$name];
         }
 
+        $instance = $this->build($name);
+
+        if (isset($this->shares[$name])) {
+            $this->instances[$name] = $instance;
+        }
+
+        return $instance;
+    }
+
+    /**
+     * @param $name
+     *
+     * @return mixed|object
+     *
+     * @throws ReflectionException
+     */
+    protected function build($name)
+    {
         $concrete = $this->getConcrete($name);
 
         if ($concrete instanceof Closure) {
-            return $this->saveInstanceIfShareable($name, $concrete($this));
+            return $concrete($this);
         }
 
         $reflector = new ReflectionClass($concrete);
@@ -76,12 +94,10 @@ class Container implements ArrayAccess
         $constructor = $reflector->getConstructor();
 
         if (!$constructor || !$constructor->getParameters()) {
-            $instance = $reflector->newInstance();
-        } else {
-            $instance = $reflector->newInstanceArgs($this->getDependencies($constructor->getParameters()));
+            return $reflector->newInstance();
         }
 
-        return $this->saveInstanceIfShareable($name, $instance);
+        return $reflector->newInstanceArgs($this->getDependencies($constructor->getParameters()));
     }
 
     /**

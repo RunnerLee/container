@@ -10,12 +10,10 @@ return PhpCsFixer\Config::create()
     ->setRules([
         '@Symfony' => true,
         'binary_operator_spaces' => [
-            'align_equals' => true,
             'align_double_arrow' => true,
         ],
         'array_syntax' => [
-            'syntax' =>
-            'short'
+            'syntax' => 'short'
         ],
     ])
     ->setFinder(PhpCsFixer\Finder::create()->exclude('vendor')->in(__DIR__));
