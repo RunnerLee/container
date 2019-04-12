@@ -73,9 +73,9 @@ class Container implements ArrayAccess
     /**
      * @param $name
      *
-     * @return mixed|object
-     *
      * @throws ReflectionException
+     *
+     * @return mixed|object
      */
     protected function build($name)
     {
