@@ -4,7 +4,7 @@
  * @email: runnerleer@gmail.com
  * @time: 2019-04
  */
-require __DIR__ . '/fixtures/AlphaClass.php';
+require __DIR__.'/fixtures/AlphaClass.php';
 
 use Runner\Container\Container;
 
@@ -105,7 +105,6 @@ class ContainerTest extends PHPUnit_Framework_TestCase
 
     public function testOffsetUnset()
     {
-
         $this->container['testing'] = $stack = new SplStack();
 
         $this->assertTrue(isset($this->container['testing']));

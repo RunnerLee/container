@@ -142,6 +142,7 @@ class Container implements ArrayAccess
     /**
      * @param $name
      * @param $instance
+     *
      * @return mixed
      */
     protected function saveInstanceIfShareable($name, $instance)
@@ -155,6 +156,7 @@ class Container implements ArrayAccess
 
     /**
      * @param mixed $offset
+     *
      * @return bool
      */
     public function offsetExists($offset)
@@ -164,7 +166,9 @@ class Container implements ArrayAccess
 
     /**
      * @param mixed $offset
+     *
      * @return mixed|object
+     *
      * @throws ReflectionException
      */
     public function offsetGet($offset)
