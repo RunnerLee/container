@@ -5,8 +5,13 @@
  * @time: 2019-04
  */
 require __DIR__.'/fixtures/AlphaClass.php';
+require __DIR__.'/fixtures/BetaClass.php';
+require __DIR__.'/fixtures/CalenClass.php';
+require __DIR__.'/fixtures/DelayClass.php';
+require __DIR__.'/fixtures/EdgeClass.php';
 
 use Runner\Container\Container;
+use Runner\Container\Exceptions\BindingResolutionException;
 
 class ContainerTest extends PHPUnit_Framework_TestCase
 {
@@ -128,5 +133,39 @@ class ContainerTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame($object, $alpha->getObject());
         $this->assertInstanceOf(SplStack::class, $alpha->getStack());
+    }
+
+    public function testNotInstantiable()
+    {
+        $this->expectException(BindingResolutionException::class);
+        $this->expectExceptionMessage('ArrayAccess is not instantiable');
+
+        $this->container->make(ArrayAccess::class);
+    }
+
+    public function testNotExistsClass()
+    {
+        $this->expectException(ReflectionException::class);
+        $this->expectExceptionMessage('Class testing does not exist');
+
+        $this->container->make('testing');
+    }
+
+    public function testInject()
+    {
+        $this->container->make(BetaClass::class);
+
+        $this->expectException(BindingResolutionException::class);
+        $this->expectExceptionMessage('parameter holy has no default value in CalenClass');
+        $this->container->make(CalenClass::class);
+    }
+
+    public function testInjectDependenciesWithUnknownException()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->expectExceptionMessage('testing inject');
+
+        $this->container->make(DelayClass::class);
     }
 }

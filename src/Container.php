@@ -156,21 +156,6 @@ class Container implements ArrayAccess
     }
 
     /**
-     * @param $name
-     * @param $instance
-     *
-     * @return mixed
-     */
-    protected function saveInstanceIfShareable($name, $instance)
-    {
-        if (isset($this->shares[$name])) {
-            $this->instances[$name] = $instance;
-        }
-
-        return $instance;
-    }
-
-    /**
      * @param mixed $offset
      *
      * @return bool
