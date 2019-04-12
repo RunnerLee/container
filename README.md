@@ -60,7 +60,7 @@ $container->bind('holy', 'stack');
 $container->make('holy');
 ```
 
-bind a closure as concrete to container
+bind a closure as concrete into container
 
 ```php
 $container->bind('stack', function () {
