@@ -19,7 +19,9 @@ $ composer require runner/container
 
 ### Usage
 
-create an instance of the container and define a class as service with an alias, and then you can get the service instance by alias
+create an instance of the container, and bind services into the container with a name.
+
+#### basic binding
 
 ```php
 use Runner\Container\Container;
@@ -29,9 +31,15 @@ $container = new Container();
 $container->bind('stack', SplStack::class);
 
 $container->make('stack');
+
+$container->bind(ArrayAccess::class, function () {
+    return new ArrayObject();
+});
 ```
 
-use an interface name as alias and bind a concrete implementation to it
+#### binding implementation
+
+use an interface name as name and bind a concrete implementation to it
 
 ```php
 class Demo extends ArrayObject
@@ -50,24 +58,39 @@ $container->make(ArrayAccess::class);
 
 ```
 
-bind an alias as concrete to another alias
+#### binding singleton
+
+```php
+$container->bind(
+    'db', 
+    function () {
+        return new PDO();
+    }, 
+    true
+);
+
+$container->bind();
+```
+
+#### binding instance
+
+just another way to binding singleton
+
+```php
+$pdo = new PDO();
+
+$container->instance('db', $pdo);
+```
+
+#### alias binding
+bind an alias as concrete to a registered service
 
 ```php
 $container->bind('stack', SplStack::class);
 
-$container->bind('holy', 'stack');
+$container->bind('holy', 'stack', true);
 
 $container->make('holy');
-```
-
-bind a closure as concrete into container
-
-```php
-$container->bind('stack', function () {
-    return new SplStack;
-});
-
-$container->make('stack');
 ```
 
 have fun :)

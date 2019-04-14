@@ -72,6 +72,15 @@ class Container implements ArrayAccess
 
     /**
      * @param $name
+     * @param $instance
+     */
+    public function instance($name, $instance)
+    {
+        $this->instances[$name] = $instance;
+    }
+
+    /**
+     * @param $name
      *
      * @throws ReflectionException
      *
