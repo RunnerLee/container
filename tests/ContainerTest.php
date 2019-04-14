@@ -171,7 +171,7 @@ class ContainerTest extends PHPUnit_Framework_TestCase
 
     public function testBindingInstance()
     {
-        $object= new stdClass();
+        $object = new stdClass();
 
         $this->container->instance('testing', $object);
 
