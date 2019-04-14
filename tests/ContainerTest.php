@@ -168,4 +168,13 @@ class ContainerTest extends PHPUnit_Framework_TestCase
 
         $this->container->make(DelayClass::class);
     }
+
+    public function testBindingInstance()
+    {
+        $object= new stdClass();
+
+        $this->container->instance('testing', $object);
+
+        $this->assertSame($object, $this->container->make('testing'));
+    }
 }
