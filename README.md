@@ -95,7 +95,13 @@ $container->make('holy');
 
 have fun :)
 
+### References
 
+- [Laravel Container](https://laravel.com/docs/5.8/container)
+- [Pimple](https://pimple.symfony.com/)
+- [依赖注入与Ioc容器](https://blog.csdn.net/dream_successor/article/details/79078905)
+- [inversion of control](https://en.wikipedia.org/wiki/Inversion_of_control)
 
+### License
 
-
+MIT
