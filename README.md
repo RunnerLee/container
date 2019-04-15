@@ -42,17 +42,10 @@ $container->bind(ArrayAccess::class, function () {
 use an interface name as name and bind a concrete implementation to it
 
 ```php
-class Demo extends ArrayObject
-{
-    public function __construct()
-    {
-        parent::__construct([], 0, 'ArrayIterator');
-    }
-}
 
-$container = new Container();
-
-$container->bind(ArrayAccess::class, Demo::class);
+$container->bind(ArrayAccess::class, function () {
+    return new ArrayObject();
+});
 
 $container->make(ArrayAccess::class);
 
@@ -86,11 +79,13 @@ $container->instance('db', $pdo);
 bind an alias as concrete to a registered service
 
 ```php
-$container->bind('stack', SplStack::class);
+$container->bind(CacheInterface::class, function () {
+    return new FileCache();
+});
 
-$container->bind('holy', 'stack', true);
+$container->bind('cache', CacheInterface::class, true);
 
-$container->make('holy');
+$container->make('cache');
 ```
 
 have fun :)
