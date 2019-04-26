@@ -32,6 +32,8 @@ class Container implements ArrayAccess
      */
     protected $shares = [];
 
+    protected $contextual = [];
+
     /**
      * @param $name
      * @param null $concrete
@@ -46,6 +48,27 @@ class Container implements ArrayAccess
         $this->bindings[$name] = $concrete;
 
         $share && $this->shares[$name] = true;
+    }
+
+    /**
+     * @param $concretes
+     * @param $parameter
+     * @param $implementation
+     */
+    public function bindContext($concretes, $parameter, $implementation)
+    {
+        foreach ((array)$concretes as $concrete) {
+            $this->contextual[$concrete][$parameter] = $implementation;
+        }
+    }
+
+    /**
+     * @param $name
+     * @param $instance
+     */
+    public function instance($name, $instance)
+    {
+        $this->instances[$name] = $instance;
     }
 
     /**
@@ -68,15 +91,6 @@ class Container implements ArrayAccess
         }
 
         return $instance;
-    }
-
-    /**
-     * @param $name
-     * @param $instance
-     */
-    public function instance($name, $instance)
-    {
-        $this->instances[$name] = $instance;
     }
 
     /**
@@ -106,23 +120,36 @@ class Container implements ArrayAccess
             return $reflector->newInstance();
         }
 
-        return $reflector->newInstanceArgs($this->getDependencies($constructor->getParameters()));
+        return $reflector->newInstanceArgs($this->getDependencies($concrete, $constructor->getParameters()));
     }
 
     /**
-     * @param ReflectionParameter[] $reflectionParameters
-     *
-     * @throws
-     *
-     * @return array
+     * @param $name
+     * @return bool
      */
-    protected function getDependencies(array $reflectionParameters)
+    public function isBound($name)
+    {
+        return isset($this->instances[$name]) || isset($this->bindings[$name]);
+    }
+
+    /**
+     * @param $concrete
+     * @param ReflectionParameter[] $reflectionParameters
+     * @return array
+     * @throws Exception
+     */
+    protected function getDependencies($concrete, array $reflectionParameters)
     {
         $result = [];
         foreach ($reflectionParameters as $parameter) {
             if (!is_null($parameter->getClass())) {
                 try {
-                    $result[] = $this->make($parameter->getClass()->getName());
+                    $class = $parameter->getClass()->getName();
+                    if (isset($this->contextual[$concrete][$class])) {
+                        $result[] = $this->buildContextualBinding($this->contextual[$concrete][$class]);
+                    } else {
+                        $result[] = $this->make($class);
+                    }
                 } catch (Exception $exception) {
                     if (!$parameter->isOptional()) {
                         throw $exception;
@@ -144,6 +171,19 @@ class Container implements ArrayAccess
         }
 
         return $result;
+    }
+
+    /**
+     * @param $implementation
+     * @return mixed|object
+     * @throws ReflectionException
+     */
+    protected function buildContextualBinding($implementation)
+    {
+        if ($implementation instanceof Closure) {
+            return $implementation($this);
+        }
+        return $this->make($implementation);
     }
 
     /**
@@ -171,7 +211,7 @@ class Container implements ArrayAccess
      */
     public function offsetExists($offset)
     {
-        return isset($this->instances[$offset]) || isset($this->bindings[$offset]);
+        return $this->isBound($offset);
     }
 
     /**

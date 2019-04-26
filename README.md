@@ -90,6 +90,14 @@ $container->make('cache');
 
 have fun :)
 
+#### contextual binding
+
+bind different implementation to classes while doing injecting
+
+```php
+
+```
+
 ### References
 
 - [Laravel Container](https://laravel.com/docs/5.8/container)

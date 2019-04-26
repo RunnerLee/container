@@ -177,4 +177,50 @@ class ContainerTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame($object, $this->container->make('testing'));
     }
+
+    public function testBindingContext()
+    {
+        $object = new ArrayObject();
+        $this->container->bindContext(
+            [
+                AlphaClass::class,
+            ],
+            ArrayAccess::class,
+            function (Container $container) use ($object) {
+                return $object;
+            }
+        );
+        $this->assertSame($object, $this->container->make(AlphaClass::class)->getObject());
+
+        $newObject = new ArrayObject();
+
+        $this->container->bind('array', function () use ($newObject) {
+            return $newObject;
+        });
+        $this->container->bindContext(AlphaClass::class, ArrayAccess::class, 'array');
+        $this->assertSame($newObject, $this->container->make(AlphaClass::class)->getObject());
+    }
+
+    public function testBindingContextWithSameAliasBound()
+    {
+        $this->container->bind(ArrayAccess::class, function () {
+            return new ArrayObject();
+        });
+        $object = new ArrayObject();
+        $this->container->bindContext(
+            AlphaClass::class,
+            ArrayAccess::class,
+            function () use ($object) {
+                return $object;
+            }
+        );
+        $this->assertSame($object, $this->container->make(AlphaClass::class)->getObject());
+
+        $newObject = new ArrayObject();
+        $this->container->bind('array', function () use ($newObject) {
+            return $newObject;
+        });
+        $this->container->bindContext(AlphaClass::class, ArrayAccess::class, 'array');
+        $this->assertSame($newObject, $this->container->make(AlphaClass::class)->getObject());
+    }
 }
