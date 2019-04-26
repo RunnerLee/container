@@ -32,6 +32,9 @@ class Container implements ArrayAccess
      */
     protected $shares = [];
 
+    /**
+     * @var array
+     */
     protected $contextual = [];
 
     /**
