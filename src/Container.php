@@ -57,7 +57,7 @@ class Container implements ArrayAccess
      */
     public function bindContext($concretes, $parameter, $implementation)
     {
-        foreach ((array)$concretes as $concrete) {
+        foreach ((array) $concretes as $concrete) {
             $this->contextual[$concrete][$parameter] = $implementation;
         }
     }
@@ -125,6 +125,7 @@ class Container implements ArrayAccess
 
     /**
      * @param $name
+     *
      * @return bool
      */
     public function isBound($name)
@@ -135,8 +136,10 @@ class Container implements ArrayAccess
     /**
      * @param $concrete
      * @param ReflectionParameter[] $reflectionParameters
-     * @return array
+     *
      * @throws Exception
+     *
+     * @return array
      */
     protected function getDependencies($concrete, array $reflectionParameters)
     {
@@ -175,14 +178,17 @@ class Container implements ArrayAccess
 
     /**
      * @param $implementation
-     * @return mixed|object
+     *
      * @throws ReflectionException
+     *
+     * @return mixed|object
      */
     protected function buildContextualBinding($implementation)
     {
         if ($implementation instanceof Closure) {
             return $implementation($this);
         }
+
         return $this->make($implementation);
     }
 
