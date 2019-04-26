@@ -95,7 +95,23 @@ have fun :)
 bind different implementation to classes while doing injecting
 
 ```php
+$container->bind(CacheInterface::class, function () {
+    return new FileCache();
+});
 
+$container->bind('redis-cache', function () {
+    return new RedisCache();
+});
+
+$container->bindContext(
+    PageController::class,
+    CacheInterface::class,
+    function (Container $container) {
+        return $container->make('redis-cache');
+    }
+);
+
+$controller = $container->make(PageController::class);
 ```
 
 ### References
