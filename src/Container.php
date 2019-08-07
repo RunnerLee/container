@@ -165,7 +165,7 @@ class Container implements ArrayAccess
             }
 
             if (isset($this->contextual[$concrete][$name = $parameter->getName()])) {
-                $result[] = $this->buildContextualBinding($this->contextual[$concrete][$name]);
+                $result[] = $this->buildContextualBinding(sprintf('$%s', $this->contextual[$concrete][$name]));
                 continue;
             }
 
@@ -198,11 +198,11 @@ class Container implements ArrayAccess
             return $implementation($this);
         }
 
-        if (is_string($implementation) && class_exists($implementation)) {
-            return $this->make($implementation);
+        if (is_object($implementation)) {
+            return $implementation;
         }
 
-        return $implementation;
+        return $this->make($implementation);
     }
 
     /**
