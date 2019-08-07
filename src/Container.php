@@ -38,8 +38,8 @@ class Container implements ArrayAccess
     protected $contextual = [];
 
     /**
-     * @param $name
-     * @param null $concrete
+     * @param string $name
+     * @param string|callable $concrete
      * @param bool $share
      */
     public function bind($name, $concrete = null, $share = false)
@@ -148,32 +148,38 @@ class Container implements ArrayAccess
     {
         $result = [];
         foreach ($reflectionParameters as $parameter) {
-            if (!is_null($parameter->getClass())) {
+            if(!is_null($parameter->getClass())) {
                 try {
                     $class = $parameter->getClass()->getName();
-                    if (isset($this->contextual[$concrete][$class])) {
-                        $result[] = $this->buildContextualBinding($this->contextual[$concrete][$class]);
-                    } else {
-                        $result[] = $this->make($class);
-                    }
+
+                    $result[] = isset($this->contextual[$concrete][$class])
+                        ? $this->buildContextualBinding($this->contextual[$concrete][$class])
+                        : $this->make($class);
                 } catch (Exception $exception) {
                     if (!$parameter->isOptional()) {
                         throw $exception;
                     }
                     $result[] = $parameter->getDefaultValue();
                 }
-            } else {
-                if (!$parameter->isDefaultValueAvailable()) {
-                    throw new BindingResolutionException(
-                        sprintf(
-                            'parameter %s has no default value in %s',
-                            $parameter->getName(),
-                            $parameter->getDeclaringClass()->getName()
-                        )
-                    );
-                }
-                $result[] = $parameter->getDefaultValue();
+                continue;
             }
+
+            if (isset($this->contextual[$concrete][$name = $parameter->getName()])) {
+                $result[] = $this->buildContextualBinding($this->contextual[$concrete][$name]);
+                continue;
+            }
+
+            // 如果没有类或接口的类型约束, 并且没有绑定上下文, 且参数没有默认值, 就直接抛异常退出掉
+            if (!$parameter->isDefaultValueAvailable()) {
+                throw new BindingResolutionException(
+                    sprintf(
+                        'parameter %s has no default value in %s',
+                        $parameter->getName(),
+                        $parameter->getDeclaringClass()->getName()
+                    )
+                );
+            }
+            $result[] = $parameter->getDefaultValue();
         }
 
         return $result;
@@ -192,7 +198,11 @@ class Container implements ArrayAccess
             return $implementation($this);
         }
 
-        return $this->make($implementation);
+        if (is_string($implementation) && class_exists($implementation)) {
+            return $this->make($implementation);
+        }
+
+        return $implementation;
     }
 
     /**

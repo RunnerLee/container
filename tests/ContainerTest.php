@@ -13,14 +13,14 @@ require __DIR__.'/fixtures/EdgeClass.php';
 use Runner\Container\Container;
 use Runner\Container\Exceptions\BindingResolutionException;
 
-class ContainerTest extends PHPUnit_Framework_TestCase
+class ContainerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Container
      */
     protected $container;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->container = new Container();
     }
@@ -197,7 +197,9 @@ class ContainerTest extends PHPUnit_Framework_TestCase
         $this->container->bind('array', function () use ($newObject) {
             return $newObject;
         });
-        $this->container->bindContext(AlphaClass::class, ArrayAccess::class, 'array');
+        $this->container->bindContext(AlphaClass::class, ArrayAccess::class, function (Container $container) {
+            return $container->make('array');
+        });
         $this->assertSame($newObject, $this->container->make(AlphaClass::class)->getObject());
     }
 
@@ -220,7 +222,9 @@ class ContainerTest extends PHPUnit_Framework_TestCase
         $this->container->bind('array', function () use ($newObject) {
             return $newObject;
         });
-        $this->container->bindContext(AlphaClass::class, ArrayAccess::class, 'array');
+        $this->container->bindContext(AlphaClass::class, ArrayAccess::class, function (Container $container) {
+            return $container->make('array');
+        });
         $this->assertSame($newObject, $this->container->make(AlphaClass::class)->getObject());
     }
 }

@@ -10,3 +10,4 @@ bin
 .idea
 .php_cs.cache
 example
+.phpunit.result.cache
