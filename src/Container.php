@@ -7,9 +7,9 @@
 
 namespace Runner\Container;
 
-use ArrayAccess;
 use Closure;
 use Exception;
+use ArrayAccess;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionParameter;
@@ -38,9 +38,9 @@ class Container implements ArrayAccess
     protected $contextual = [];
 
     /**
-     * @param string $name
+     * @param string          $name
      * @param string|callable $concrete
-     * @param bool $share
+     * @param bool            $share
      */
     public function bind($name, $concrete = null, $share = false)
     {
@@ -148,7 +148,7 @@ class Container implements ArrayAccess
     {
         $result = [];
         foreach ($reflectionParameters as $parameter) {
-            if(!is_null($parameter->getClass())) {
+            if (!is_null($parameter->getClass())) {
                 try {
                     $class = $parameter->getClass()->getName();
 
