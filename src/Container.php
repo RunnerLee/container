@@ -10,12 +10,14 @@ namespace Runner\Container;
 use Closure;
 use Exception;
 use ArrayAccess;
+use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionParameter;
 use Runner\Container\Exceptions\BindingResolutionException;
+use Runner\Container\Exceptions\EntryNotFoundException;
 
-class Container implements ArrayAccess
+class Container implements ArrayAccess, ContainerInterface
 {
     /**
      * @var array
@@ -100,6 +102,7 @@ class Container implements ArrayAccess
      * @param $name
      *
      * @throws ReflectionException
+     * @throws BindingResolutionException
      *
      * @return mixed|object
      */
@@ -260,5 +263,25 @@ class Container implements ArrayAccess
     public function offsetUnset($offset)
     {
         unset($this->instances[$offset]);
+    }
+
+    /**
+     *  {@inheritdoc}
+     */
+    public function get($id)
+    {
+        if (!$this->isBound($id)) {
+            throw new EntryNotFoundException();
+        }
+
+        return $this->make($id);
+    }
+
+    /**
+     *  {@inheritdoc}
+     */
+    public function has($id)
+    {
+        return $this->isBound($id);
     }
 }

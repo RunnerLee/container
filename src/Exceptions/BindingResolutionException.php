@@ -7,8 +7,9 @@
 
 namespace Runner\Container\Exceptions;
 
+use Psr\Container\ContainerExceptionInterface;
 use RuntimeException;
 
-class BindingResolutionException extends RuntimeException
+class BindingResolutionException extends RuntimeException implements ContainerExceptionInterface
 {
 }

@@ -12,6 +12,7 @@ require __DIR__ . '/fixtures/EdgeClass.php';
 
 use Runner\Container\Container;
 use Runner\Container\Exceptions\BindingResolutionException;
+use Runner\Container\Exceptions\EntryNotFoundException;
 
 class ContainerTest extends \PHPUnit\Framework\TestCase
 {
@@ -226,5 +227,28 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
             return $container->make('array');
         });
         $this->assertSame($newObject, $this->container->make(AlphaClass::class)->getObject());
+    }
+
+    public function testPsr11Has()
+    {
+        $this->container->bind('aaa', ArrayObject::class);
+        $this->container->instance('bbb', new ArrayObject());
+
+        $this->assertSame(true, $this->container->has('aaa'));
+        $this->assertSame(true, $this->container->has('bbb'));
+        $this->assertSame(false, $this->container->has('ccc'));
+    }
+
+    public function testPsr11Get()
+    {
+        $this->container->bind('aaa', function () {
+            return new ArrayObject();
+        });
+
+        $this->container->get('aaa');
+
+        $this->expectException(EntryNotFoundException::class);
+
+        $this->container->get('bbb');
     }
 }
