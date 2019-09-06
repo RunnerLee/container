@@ -4,11 +4,11 @@
  * @email: runnerleer@gmail.com
  * @time: 2019-04
  */
-require __DIR__ . '/fixtures/AlphaClass.php';
-require __DIR__ . '/fixtures/BetaClass.php';
-require __DIR__ . '/fixtures/CalenClass.php';
-require __DIR__ . '/fixtures/DelayClass.php';
-require __DIR__ . '/fixtures/EdgeClass.php';
+require __DIR__.'/fixtures/AlphaClass.php';
+require __DIR__.'/fixtures/BetaClass.php';
+require __DIR__.'/fixtures/CalenClass.php';
+require __DIR__.'/fixtures/DelayClass.php';
+require __DIR__.'/fixtures/EdgeClass.php';
 
 use Runner\Container\Container;
 use Runner\Container\Exceptions\BindingResolutionException;

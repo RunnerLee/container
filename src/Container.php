@@ -7,9 +7,9 @@
 
 namespace Runner\Container;
 
+use ArrayAccess;
 use Closure;
 use Exception;
-use ArrayAccess;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use ReflectionException;
