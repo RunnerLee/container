@@ -99,7 +99,7 @@ $container->bind(CacheInterface::class, function () {
     return new FileCache();
 });
 
-$container->bind('redis-cache', function () {
+$container->bind('redis_cache', function () {
     return new RedisCache();
 });
 
@@ -107,7 +107,7 @@ $container->bindContext(
     PageController::class,
     CacheInterface::class,
     function (Container $container) {
-        return $container->make('redis-cache');
+        return $container->make('redis_cache');
     }
 );
 
